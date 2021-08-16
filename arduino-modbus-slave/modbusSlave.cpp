@@ -325,14 +325,22 @@ void modbusSlave::run(void)
 	//if a reply was generated
 	if(_len)
 	{
+		digitalWrite(8,HIGH);
+		
 		int i;
 		//send the reply to the serial UART
-		//Senguino doesn't support a bulk serial write command....
+		//Quantity of registers must respect Modbus limit
+		// Tested with function 3 and 125 registers (master = ModbusDoctor)
 		for(i = 0 ; i < _len ; i++)
+		{
 			Serial.write(_msg[i]);
+			delay(1);
+		}
 		//free the allocated memory for the reply message
 		free(_msg);
 		//reset the message length
 		_len = 0;
+		
+		digitalWrite(8,LOW);
 	}
 }
